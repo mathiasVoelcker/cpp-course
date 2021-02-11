@@ -8,7 +8,7 @@ namespace entities {
     {
         m_particles = new Particle[COUNT_PARTICLES];
         lastTime = 0;
-        gravity = 0.003;
+        gravity = 0.01;
     }
 
     void Swarm::update(int elapsed)
@@ -17,7 +17,7 @@ namespace entities {
 
         // cout << elapsed << endl;
 
-        gravity += 0.003;
+        gravity += 0.01;
 
         for (int i = 0; i < Swarm::COUNT_PARTICLES; i++)
         {

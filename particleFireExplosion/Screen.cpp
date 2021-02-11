@@ -55,8 +55,8 @@ namespace helpers
         m_buffer = new Uint32[SCREEN_HEIGHT * SCREEN_WIDTH];
         m_blur_buffer = new Uint32[SCREEN_HEIGHT * SCREEN_WIDTH];
 
-        memset(m_buffer, 0XFF000000, SCREEN_HEIGHT * SCREEN_WIDTH * sizeof(Uint32));
-        memset(m_blur_buffer, 0XFF000000, SCREEN_HEIGHT * SCREEN_WIDTH * sizeof(Uint32));
+        // memset(m_buffer, 0XFF000000, SCREEN_HEIGHT * SCREEN_WIDTH * sizeof(Uint32));
+        // memset(m_blur_buffer, 0XFF000000, SCREEN_HEIGHT * SCREEN_WIDTH * sizeof(Uint32));
 
         return true;
     }
@@ -75,6 +75,26 @@ namespace helpers
         color += blue;
         color <<= 8;
         color += 0xFF;
+
+        // cout << hex << color << endl;
+
+        m_buffer[(y * SCREEN_WIDTH) + x] = color;
+    }
+
+    void Screen::setPixel(int x, int y, Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha)
+    {
+        if (x < 0 || x >= SCREEN_WIDTH || y < 0 || y >= SCREEN_HEIGHT)
+            return;
+            
+        Uint32 color = 0;
+
+        color += red;
+        color <<= 8;
+        color += green;
+        color <<= 8;
+        color += blue;
+        color <<= 8;
+        color += alpha;
 
         // cout << hex << color << endl;
 
@@ -144,12 +164,45 @@ namespace helpers
         SDL_RenderClear(m_renderer);
         SDL_RenderCopy(m_renderer, m_texture, NULL, NULL);
         SDL_RenderPresent(m_renderer);
+        m_blur_buffer = m_buffer;
     }
 
     void Screen::clear()
     {
-        memset(m_buffer, 0x00000000, SCREEN_HEIGHT * SCREEN_WIDTH * sizeof(Uint32));
-        memset(m_blur_buffer, 0x00000000, SCREEN_HEIGHT * SCREEN_WIDTH * sizeof(Uint32));
+        for (int y = 0; y < SCREEN_HEIGHT; y++)
+        {
+            for (int x = 0; x < SCREEN_WIDTH; x++)
+            {
+                Uint32 particle = m_buffer[(y * SCREEN_WIDTH) + x];
+                Uint8 alpha = particle & 0x000000FF;
+                if (alpha == 0) break;
+                alpha -= 5;
+                // setPixel(x, y, 
+                //     particle & 0XFF000000,
+                //     particle & 0X00FF0000,
+                //     particle & 0X0000FF00,
+                //     0XFF);
+                // if (particle != 0x000000FF)
+                //     cout << hex << (particle & 0xFF000000 >> 24)  << endl;
+                setPixel(x, y, 
+                    (Uint8)(particle >> 24),
+                    (Uint8)(particle >> 16),
+                    (Uint8)(particle >> 8),
+                    alpha);
+                
+                m_buffer[(y * SCREEN_WIDTH) + x] = (particle >> 24) + (particle >> 16) + (particle >> 8) + alpha;
+                
+                // particle = m_blur_buffer[y * SCREEN_HEIGHT + x];
+                // alpha = particle & 0x000000FF;
+                // if (alpha == 0) break;
+                // alpha -= 1;
+                // particle <<= 24;
+                // particle += alpha;
+                // m_blur_buffer[y * SCREEN_HEIGHT + x] = particle;
+            }
+        }
+        // memset(m_buffer, 0x00000000, SCREEN_HEIGHT * SCREEN_WIDTH * sizeof(Uint32));
+        // memset(m_blur_buffer, 0x00000000, SCREEN_HEIGHT * SCREEN_WIDTH * sizeof(Uint32));
     }
 
     bool Screen::proccessEvents()

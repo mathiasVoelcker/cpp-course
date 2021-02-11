@@ -28,7 +28,7 @@ int main()
         // 0X0000FF00  BLUE
         // 0XFF000000 RED
         // 0X00FF0000 GREEN
-        screen.clear();
+        
 
         // number of milisec since program started
         int elapsed = SDL_GetTicks();
@@ -72,6 +72,8 @@ int main()
         // }
 
         screen.update();
+
+        screen.clear();
 
         if (!screen.proccessEvents())
             break;

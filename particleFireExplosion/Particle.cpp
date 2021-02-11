@@ -24,7 +24,7 @@ namespace entities
         m_x = 1; 
         m_y = 1;
         m_direction = (2.0 * M_PI * rand()) / RAND_MAX;
-        m_speed = 0.05 * ((2.0 * rand() / RAND_MAX));
+        m_speed = 0.05 * (2.0 * rand() / RAND_MAX);
 
         m_speed *= m_speed;
     }

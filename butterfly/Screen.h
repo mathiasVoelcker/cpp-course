@@ -14,7 +14,6 @@ namespace helpers
             SDL_Renderer *m_renderer;
             SDL_Texture *m_texture;
             Uint32 *m_buffer;
-            Uint32 *m_blur_buffer;
 
         public:
             Screen();
@@ -26,6 +25,7 @@ namespace helpers
             void close();
             void clear();
             void boxBlur();
+            void test();
     };
 }
 

@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "ostream": "cpp",
-        "__hash_table": "cpp"
+        "__hash_table": "cpp",
+        "__locale": "cpp"
     }
 }
